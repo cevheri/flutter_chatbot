@@ -1,5 +1,7 @@
 
 
+import 'dart:async';
+
 import 'package:dnext_chatbot/repositories/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,18 +16,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required this.authRepository}) : super(AuthState.initial()) {
     on<AuthLoginEvent>(_onLogin);
     on<AuthLogoutEvent>(_onLogout);
+    on<AutSetCurrentUserEvent>(_onSetCurrentUser);
   }
 
   final AuthRepository authRepository;
 
   Future<void> _onLogin(AuthLoginEvent event, Emitter<AuthState> emit) async {
+    print('Bloc Login.Start');
     emit(state.copyWith(isLoading: true));
     try {
-      await authRepository.login();
+      print('Bloc Login');
+     var result = await authRepository.login().then((value) => {
+        print('Bloc Login.ID Token: ${value.idToken}'),
+        print('bloc Login.User Info: ${value.accessToken}')
+     });
+      print('Bloc Login.Result: $result');
       emit(state.copyWith(isLoading: false, isSuccess: true));
     } catch (e) {
       emit(state.copyWith(isLoading: false, isFailure: true, error: e.toString()));
     }
+    print('Bloc Login.End');
   }
 
   Future<void> _onLogout(AuthLogoutEvent event, Emitter<AuthState> emit) async {
@@ -36,5 +46,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(state.copyWith(isLoading: false, isFailure: true, error: e.toString()));
     }
+  }
+
+  FutureOr<void> _onSetCurrentUser(AutSetCurrentUserEvent event, Emitter<AuthState> emit) {
+    emit(state.copyWith(currentUser: event.currentUser, isLogin: true));
   }
 }

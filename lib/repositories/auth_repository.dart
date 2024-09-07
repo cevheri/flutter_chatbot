@@ -9,17 +9,19 @@ class AuthRepository {
 
   Future<TokenResponse> login() async {
     try {
+
       var tokenResponse = await _authService.login();
-      await _authService.saveToken(tokenResponse);
+      print('AuthRepository.Login.ID Token: ${tokenResponse.idToken}');
+      //await _authService.saveToken(tokenResponse);
       return tokenResponse;
     } catch (e) {
       throw Exception('Login failed: $e');
     }
   }
 
-  Future<TokenResponse?> getToken() async {
-    return await _authService.getToken();
-  }
+  // Future<TokenResponse?> getToken() async {
+  //   return await _authService.getToken();
+  // }
 
   Future<void> logout() async {
     //TODO logout

@@ -1,10 +1,12 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:dnext_chatbot/bloc/auth/auth_bloc.dart';
+import 'package:dnext_chatbot/constants/auth_constants.dart';
 import 'package:dnext_chatbot/presentation/screen/login/login_screen.dart';
 import 'package:dnext_chatbot/repositories/auth_repository.dart';
 import 'package:dnext_chatbot/routes/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 class DnextChatbotApp extends StatelessWidget {
@@ -40,7 +42,7 @@ class DnextChatbotApp extends StatelessWidget {
         builder: (light, dark) {
           return MultiBlocProvider(
             providers: [
-              BlocProvider<AuthBloc>(create: (_) => AuthBloc(authRepository: AuthRepository())),
+              BlocProvider<AuthBloc>(create: (_) => AuthBloc(authRepository: AuthRepository())..add(AuthLoginEvent())),
             ],
             child: GetMaterialApp(
               theme: light,
@@ -56,6 +58,13 @@ class DnextChatbotApp extends StatelessWidget {
                   return BlocProvider<AuthBloc>(create: (context)=> AuthBloc(authRepository: AuthRepository()), child: LoginScreen());
                 }
               },
+              initialBinding: BindingsBuilder(() {
+                  String? currentUser = AuthConstants.currentUser;
+                  if(currentUser!=null){
+                    BlocProvider.of<AuthBloc>(context).add(AutSetCurrentUserEvent(currentUser));
+                  }
+                },
+              ),
             ),
           );
         });
