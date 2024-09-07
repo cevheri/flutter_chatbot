@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:dnext_chatbot/repositories/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:openid_client/openid_client.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -49,6 +50,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   FutureOr<void> _onSetCurrentUser(AutSetCurrentUserEvent event, Emitter<AuthState> emit) {
-    emit(state.copyWith(currentUser: event.currentUser, isLogin: true));
+    emit(state.copyWith(userInfo: event.userInfo, isLoading: false, isSuccess: true, isFailure: false, error: ''));
   }
 }

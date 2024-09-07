@@ -15,10 +15,10 @@ class AuthLoginEvent extends AuthEvent {}
 class AuthLogoutEvent extends AuthEvent {}
 
 class AutSetCurrentUserEvent extends AuthEvent {
-  final String currentUser;
+  final UserInfo userInfo;
 
-  AutSetCurrentUserEvent(this.currentUser);
+  const AutSetCurrentUserEvent(this.userInfo);
 
   @override
-  List<Object> get props => [currentUser];
+  List<Object> get props => [userInfo];
 }

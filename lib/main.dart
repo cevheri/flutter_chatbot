@@ -1,5 +1,5 @@
 import 'package:dnext_chatbot/app.dart';
-import 'package:dnext_chatbot/constants/auth_constants.dart';
+import 'package:dnext_chatbot/constants/auth_caches.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,13 +27,15 @@ Future<Client> getClient() async {
 void main() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String? language = prefs.getString('lang') ?? 'en';
-  AuthConstants.accessToken = prefs.getString('access-token') ?? "";
-  AuthConstants.roles = prefs.getStringList('roles') ?? [];
+  // AuthCaches.accessToken = prefs.getString('access-token') ?? "";
+  // AuthCaches.roles = prefs.getStringList('roles') ?? [];
 
   client = await getClient();
-  AuthConstants.client = client;
+  AuthCaches.client = client;
   credential = await getRedirectResult(client, scopes: scopes);
-  AuthConstants.credential = credential;
+  if(credential != null){
+    AuthCaches.credential = credential;
+  }
   runApp(const DnextChatbotApp());
 
 

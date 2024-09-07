@@ -1,6 +1,6 @@
 import 'package:openid_client/openid_client.dart';
 
-class AuthConstants {
+class AuthCaches {
   static String accessToken = "";
   static List<String> roles = [];
   static Credential? credential;
@@ -10,4 +10,5 @@ class AuthConstants {
   static String idToken ="";
 
   static String? currentUser;
+  static UserInfo? userInfo;
 }

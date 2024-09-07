@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dnext_chatbot/constants/auth_constants.dart';
+import 'package:dnext_chatbot/constants/auth_caches.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:openid_client/openid_client.dart';
@@ -66,8 +66,8 @@ String extractIdToken(Map<String, dynamic>? response) {
   AppResponse appResponse = AppResponse.fromJson(response!);
   // print('ExtractIdToken > appResponse.id_token: ${appResponse.id_token}');
   // print('ExtractIdToken > appResponse.access_token: ${appResponse.access_token}');
-  AuthConstants.accessToken = appResponse.access_token;
-  AuthConstants.idToken = appResponse.id_token;
+  AuthCaches.accessToken = appResponse.access_token;
+  AuthCaches.idToken = appResponse.id_token;
   return appResponse.id_token;
 }
 

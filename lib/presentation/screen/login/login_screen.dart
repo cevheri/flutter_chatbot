@@ -1,4 +1,4 @@
-import 'package:dnext_chatbot/constants/auth_constants.dart';
+import 'package:dnext_chatbot/constants/auth_caches.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dnext_chatbot/bloc/auth/auth.dart';
@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
           }
           if(state.isSuccess){
             print('listener -> current.isSuccess: ${state.isSuccess}');
-            print('listener accessToken : ${AuthConstants.accessToken} ');
+            print('listener accessToken : ${AuthCaches.accessToken} ');
           }
         },
         builder: (context, state) {
@@ -39,27 +39,9 @@ class LoginScreen extends StatelessWidget {
             return const CircularProgressIndicator();
           }
 
-          if(state.isLogin){
-            print('isLogin builder -> current.isLogin: ${state.isLogin}');
-            print('user : ${state.currentUser} ');
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Hello ${state.currentUser}'),
-                OutlinedButton(
-                  onPressed: () {
-                    context.read<AuthBloc>().add(AuthLogoutEvent());
-                  },
-                  child: const Text('Logout'),
-                ),
-              ],
-            );
-          }
-
 
           if (state.isSuccess) {
             print('isSuccess.builder -> current.isSuccess: ${state.isSuccess}');
-            print('isSuccess.user -> current.currentUser: ${state.currentUser}');
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -78,15 +60,14 @@ class LoginScreen extends StatelessWidget {
             onPressed: () {
               context.read<AuthBloc>().add(AuthLoginEvent());
             },
-            child: const Text('Login'),
+            child: const Text('Loginnn'),
           );
         },
         buildWhen: (previous, current) {
-          debugPrint('BuildWhen -> previous: $previous, current.isLogin: ${current.isLogin}');
-          debugPrint('BuildWhen -> previous: $previous, current: ${current.isLogin}');
+          debugPrint('BuildWhen -> previous: $previous, current.isLogin: ${current.userInfo}');
           if(current.isSuccess){
             print('BuildWhen -> current.isSuccess: ${current.isSuccess}');
-            print('accessToken : ${AuthConstants.accessToken} ');
+            print('accessToken : ${AuthCaches.accessToken} ');
           }
           return true;
         },

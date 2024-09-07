@@ -1,8 +1,12 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:dnext_chatbot/bloc/auth/auth_bloc.dart';
-import 'package:dnext_chatbot/constants/auth_constants.dart';
+import 'package:dnext_chatbot/bloc/chat/chat.dart';
+import 'package:dnext_chatbot/constants/auth_caches.dart';
+import 'package:dnext_chatbot/presentation/screen/chat/chat_screen.dart';
 import 'package:dnext_chatbot/presentation/screen/login/login_screen.dart';
+import 'package:dnext_chatbot/presentation/screen/login/login_screen_stf.dart';
 import 'package:dnext_chatbot/repositories/auth_repository.dart';
+import 'package:dnext_chatbot/repositories/chat_repository.dart';
 import 'package:dnext_chatbot/routes/app_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,10 +43,12 @@ class DnextChatbotApp extends StatelessWidget {
         ),
         debugShowFloatingThemeButton: true,
         initial: AdaptiveThemeMode.system,
+
         builder: (light, dark) {
           return MultiBlocProvider(
             providers: [
-              BlocProvider<AuthBloc>(create: (_) => AuthBloc(authRepository: AuthRepository())..add(AuthLoginEvent())),
+              BlocProvider<AuthBloc>(create: (_) => AuthBloc(authRepository: AuthRepository())),
+              BlocProvider<ChatBloc>(create: (_) => ChatBloc(chatRepository: ChatRepository()))
             ],
             child: GetMaterialApp(
               theme: light,
@@ -50,23 +56,26 @@ class DnextChatbotApp extends StatelessWidget {
               debugShowCheckedModeBanner: true,
               debugShowMaterialGrid: false,
               locale: const Locale('en', 'US'),
-              routes: {
-                AppRoute.home: (context) {
-                  return BlocProvider<AuthBloc>(create: (context)=> AuthBloc(authRepository: AuthRepository()), child: LoginScreen());
-                },
-                AppRoute.login: (context) {
-                  return BlocProvider<AuthBloc>(create: (context)=> AuthBloc(authRepository: AuthRepository()), child: LoginScreen());
-                }
-              },
-              initialBinding: BindingsBuilder(() {
-                  String? currentUser = AuthConstants.currentUser;
-                  if(currentUser!=null){
-                    BlocProvider.of<AuthBloc>(context).add(AutSetCurrentUserEvent(currentUser));
-                  }
-                },
-              ),
+              getPages: [
+                GetPage(
+                  name: '/login',
+                  page: () => BlocProvider(
+                    create: (context) => AuthBloc(authRepository: AuthRepository()),
+                    child: const LoginScreenStf(title: "Login Screen"),
+                  ),
+                ),
+                GetPage(
+                  name: '/chat',
+                  page: () => BlocProvider(
+                    create: (context) => ChatBloc(chatRepository: ChatRepository()),
+                    child: const ChatScreen(),
+                  ),
+                ),
+              ],
+              initialRoute: AuthCaches.userInfo != null ? '/chat' : '/login',
             ),
           );
-        });
+        },
+    );
   }
 }
